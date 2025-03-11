@@ -1,0 +1,71 @@
+from flask_restx import Namespace, Resource, fields
+from flask import request
+from src.models.task import Task, TaskResponse, TaskStatus
+from src.services.db import Database
+from bson import ObjectId
+import json
+
+api = Namespace('tasks', description='Operaciones con tareas')
+
+task_model = api.model('Task', {
+    'id': fields.String(readonly=True, description='Identificador único'),
+    'title': fields.String(required=True, description='Título de la tarea'),
+    'description': fields.String(description='Descripción detallada'),
+    'status': fields.String(
+        enum=[s.value for s in TaskStatus],
+        default=TaskStatus.TODO.value,
+        description='Estado actual de la tarea'
+    )
+})
+
+
+@api.route('/')
+class TaskList(Resource):
+    @api.doc(security='apikey')
+    @api.marshal_list_with(task_model)
+    def get(self):
+        """Listar todas las tareas"""
+        tasks = Database().db.tasks.find()
+        return [TaskResponse.from_mongo(task) for task in tasks]
+
+    @api.doc(security='apikey')
+    @api.expect(task_model)
+    def post(self):
+        """Crear nueva tarea"""
+        try:
+            task_data = Task(**request.get_json()).dict()
+            result = Database().db.tasks.insert_one(task_data)
+            return {'id': str(result.inserted_id)}, 201
+        except Exception as e:
+            return {'error': str(e)}, 400
+
+@api.route('/<string:task_id>')
+class TaskResource(Resource):
+    @api.doc(security='apikey')
+    @api.expect(task_model)
+    def put(self, task_id):
+        """Actualizar tarea"""
+        try:
+            updates = request.get_json()
+            Database().db.tasks.update_one(
+                {'_id': ObjectId(task_id)},
+                {'$set': updates}
+            )
+            return {'message': 'Tarea actualizada'}, 200
+        except Exception as e:
+            return {'error': str(e)}, 400
+
+    @api.doc(security='apikey')
+    def delete(self, task_id):
+        """Eliminar tarea"""
+        try:
+            Database().db.tasks.delete_one({'_id': ObjectId(task_id)})
+            return {'message': 'Tarea eliminada'}, 200
+        except Exception as e:
+            return {'error': str(e)}, 400
+        
+def parse_task(task):
+    """Transforma el documento MongoDB a formato JSON"""
+    task['id'] = str(task['_id'])
+    del task['_id']
+    return task
