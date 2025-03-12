@@ -7,8 +7,7 @@ import os
 
 def create_app():
     app = Flask(__name__)
-    
-    
+        
     app.config.update({
         'MONGO_URI': os.getenv("MONGO_URI"),
         'DB_NAME': os.getenv("DB_NAME"),

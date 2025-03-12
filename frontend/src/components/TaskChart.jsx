@@ -6,10 +6,10 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
 const TaskChart = ({ data }) => {
   return (
     <div style={{ height: 400 }}>
-      <Typography variant="h6" align="center" gutterBottom>
+      <Typography variant="h5" align="center">
         Distribución de Tareas
       </Typography>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" data-testid="task-chart">
         <PieChart>
           <Pie
             data={data}
@@ -23,6 +23,7 @@ const TaskChart = ({ data }) => {
           >
             {data.map((entry, index) => (
               <Cell 
+                data-testid="chart-slice"
                 key={`cell-${index}`} 
                 fill={COLORS[index % COLORS.length]} 
               />

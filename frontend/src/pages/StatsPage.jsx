@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Typography, CircularProgress } from '@mui/material';
+import { Button, Typography, CircularProgress,Stack } from '@mui/material';
+import { Link as RouterLink } from "react-router-dom";
 import TaskChart from '../components/TaskChart';
 import { taskService } from '../services/api';
 
@@ -39,6 +40,16 @@ const StatsPage = () => {
       <Typography variant="h4" gutterBottom>
         Estadísticas de Tareas
       </Typography>
+
+      <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+        <Button
+          variant="outlined"
+          component={RouterLink}
+          to="/"
+        >
+          Home
+        </Button>
+      </Stack>
       
       {loading ? (
         <CircularProgress />

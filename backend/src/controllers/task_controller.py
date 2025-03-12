@@ -12,11 +12,7 @@ task_model = api.model('Task', {
     'id': fields.String(readonly=True, description='Identificador único'),
     'title': fields.String(required=True, description='Título de la tarea'),
     'description': fields.String(description='Descripción detallada'),
-    'status': fields.String(
-        enum=[s.value for s in TaskStatus],
-        default=TaskStatus.TODO.value,
-        description='Estado actual de la tarea'
-    )
+    'status': fields.String(required=True,description='Estado actual de la tarea')
 })
 
 
@@ -27,7 +23,9 @@ class TaskList(Resource):
     def get(self):
         """Listar todas las tareas"""
         tasks = Database().db.tasks.find()
-        return [TaskResponse.from_mongo(task).dict() for task in tasks]
+        return [
+            TaskResponse.from_mongo(task).dict() for task in tasks
+        ]
 
     @api.doc(security='apikey')
     @api.expect(task_model)

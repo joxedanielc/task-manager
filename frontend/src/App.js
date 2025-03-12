@@ -14,9 +14,6 @@ const theme = createTheme({
   },
 });
 
-console.log("API URL:", process.env.REACT_APP_API_URL);
-console.log("API KEY:", process.env.REACT_APP_API_KEY);
-
 function App() {
   return (
     <ThemeProvider theme={theme}>
