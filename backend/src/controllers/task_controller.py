@@ -4,6 +4,7 @@ from src.models.task import Task, TaskResponse, TaskStatus
 from src.services.db import Database
 from bson import ObjectId
 import json
+from flask_cors import CORS, cross_origin
 
 api = Namespace('tasks', description='Operaciones con tareas')
 
@@ -19,23 +20,27 @@ task_model = api.model('Task', {
 })
 
 
-@api.route('/')
+@api.route('/', strict_slashes=False)
 class TaskList(Resource):
     @api.doc(security='apikey')
     @api.marshal_list_with(task_model)
     def get(self):
         """Listar todas las tareas"""
         tasks = Database().db.tasks.find()
-        return [TaskResponse.from_mongo(task) for task in tasks]
+        return [TaskResponse.from_mongo(task).dict() for task in tasks]
 
     @api.doc(security='apikey')
     @api.expect(task_model)
+    @api.marshal_with(task_model, code=201)
     def post(self):
         """Crear nueva tarea"""
         try:
             task_data = Task(**request.get_json()).dict()
             result = Database().db.tasks.insert_one(task_data)
-            return {'id': str(result.inserted_id)}, 201
+            
+            new_task = Database().db.tasks.find_one({'_id': result.inserted_id})
+            return TaskResponse.from_mongo(new_task).dict(), 201
+            
         except Exception as e:
             return {'error': str(e)}, 400
 
@@ -43,6 +48,7 @@ class TaskList(Resource):
 class TaskResource(Resource):
     @api.doc(security='apikey')
     @api.expect(task_model)
+    @api.marshal_with(task_model)
     def put(self, task_id):
         """Actualizar tarea"""
         try:
@@ -51,7 +57,10 @@ class TaskResource(Resource):
                 {'_id': ObjectId(task_id)},
                 {'$set': updates}
             )
-            return {'message': 'Tarea actualizada'}, 200
+            
+            updated_task = Database().db.tasks.find_one({'_id': ObjectId(task_id)})
+            return TaskResponse.from_mongo(updated_task).dict()
+            
         except Exception as e:
             return {'error': str(e)}, 400
 

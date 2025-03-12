@@ -8,21 +8,20 @@ import os
 def create_app():
     app = Flask(__name__)
     
+    
     app.config.update({
         'MONGO_URI': os.getenv("MONGO_URI"),
         'DB_NAME': os.getenv("DB_NAME"),
-        'CORS_ALLOW_ORIGINS': os.getenv("CORS_ALLOW_ORIGINS", "").split(','),
+        'CORS_ALLOW_ORIGINS': os.getenv("CORS_ALLOW_ORIGINS", "http://localhost:3000").split(','),
         'CORS_ALLOW_METHODS': os.getenv("CORS_ALLOW_METHODS", "GET,POST,PUT,DELETE").split(','),
-        'CORS_ALLOW_HEADERS': os.getenv("CORS_ALLOW_HEADERS", "Content-Type,X-API-Key").split(',')
+        'CORS_ALLOW_HEADERS': os.getenv("CORS_ALLOW_HEADERS", "Content-Type,X-API-Key,x-api-key").split(',')
     })
 
     CORS(
         app,
-        resources={r"/api/*": {
-            "origins": app.config['CORS_ALLOW_ORIGINS'],
-            "methods": app.config['CORS_ALLOW_METHODS'],
-            "allow_headers": app.config['CORS_ALLOW_HEADERS']
-        }},
+        origins=app.config['CORS_ALLOW_ORIGINS'],
+        methods=app.config['CORS_ALLOW_METHODS'],
+        allow_headers=app.config['CORS_ALLOW_HEADERS'],
         supports_credentials=True
     )
 

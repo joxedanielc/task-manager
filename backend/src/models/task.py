@@ -23,5 +23,9 @@ class TaskResponse(Task):
 
     @classmethod
     def from_mongo(cls, data):
+        if isinstance(data.get('status'), TaskStatus):
+            data['status'] = "hola"
+            
         data['id'] = str(data['_id'])
+        del data['_id']
         return cls(**data)
