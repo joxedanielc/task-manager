@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from flask import request
-from src.models.task import Task, TaskResponse, TaskStatus
+from src.models.task import Task, TaskResponse
 from src.services.db import Database
 from bson import ObjectId
 import json
