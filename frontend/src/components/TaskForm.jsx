@@ -29,14 +29,14 @@ const TaskForm = ({ open, onClose, onSuccess, taskToEdit }) => {
         description: taskToEdit.description,
         status: taskToEdit.status
       });
+    } else {
+      setFormData({ title: '', description: '', status: 'por hacer' });
     }
   }, [taskToEdit]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log(taskToEdit)
-    console.log(formData)
     try {
       if (taskToEdit) {
         await taskService.update(taskToEdit.id, formData);
@@ -45,6 +45,7 @@ const TaskForm = ({ open, onClose, onSuccess, taskToEdit }) => {
       }
       onSuccess();
       onClose();
+      setFormData({ title: '', description: '', status: 'por hacer' });
     } catch (error) {
       console.error('Error saving task:', error);
     } finally {
