@@ -4,6 +4,8 @@ from flask_cors import CORS
 from src.controllers import task_controller
 from src.services.db import Database
 import os
+from src.controllers import auth
+from src.models.user import User
 
 def create_app():
     app = Flask(__name__)
@@ -13,7 +15,7 @@ def create_app():
         'DB_NAME': os.getenv("DB_NAME"),
         'CORS_ALLOW_ORIGINS': os.getenv("CORS_ALLOW_ORIGINS", "http://localhost:3000").split(','),
         'CORS_ALLOW_METHODS': os.getenv("CORS_ALLOW_METHODS", "GET,POST,PUT,DELETE").split(','),
-        'CORS_ALLOW_HEADERS': os.getenv("CORS_ALLOW_HEADERS", "Content-Type,X-API-Key,x-api-key").split(',')
+        'CORS_ALLOW_HEADERS': os.getenv("CORS_ALLOW_HEADERS", "Content-Type,Authorization").split(',')
     })
 
     CORS(
@@ -39,11 +41,12 @@ def create_app():
             'Bearer Auth': {
                 'type': 'apiKey',
                 'in': 'header',
-                'name': 'X-API-Key'
+                'name': 'Authorization'
             }
         }
     )
     
+    api.add_namespace(auth.api, path='/api/v1/auth')
     api.add_namespace(task_controller.api, path='/api/v1/tasks')
     
     @app.errorhandler(Exception)

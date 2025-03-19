@@ -12,7 +12,7 @@ const StatsPage = () => {
     const fetchStats = async () => {
       try {
         const response = await taskService.getAll();
-        const tasks = response.data;
+        const tasks = response;
         
         const statusCounts = tasks.reduce((acc, task) => {
           acc[task.status] = (acc[task.status] || 0) + 1;

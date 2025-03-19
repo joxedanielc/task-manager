@@ -17,7 +17,7 @@ const HomePage = () => {
   const fetchTasks = async () => {
     try {
       const response = await taskService.getAll();
-      setTasks(response.data);
+      setTasks(response);      
     } catch (error) {
       console.error('Error fetching tasks:', error);
     } finally {

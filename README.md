@@ -24,14 +24,15 @@ Crear archivo .env en backend/ con:
 ```bash
 MONGO_URI=mongodb://root:example@mongo:27017/taskdb?authSource=admin
 DB_NAME=taskdb
-API_KEY=mi-clave-secreta
+CORS_ALLOW_ORIGINS=http://localhost:3000
+SECRET_KEY=mi-clave-secreta
 ```
 
 Crear archivo .env en frontend/ con:
 
 ```bash
 REACT_APP_API_URL=http://localhost:5001/api/v1
-REACT_APP_API_KEY=mi-clave-secreta
+REACT_APP_SECRET_KEY=mi-clave-secreta
 ```
 
 ## Ejecución con Docker
@@ -67,13 +68,6 @@ http://localhost:5001/docs
 * POST /api/v1/tasks Crear nueva tarea
 * PUT /api/v1/tasks/:id Actualizar tarea
 * DELETE /api/v1/tasks/:id Eliminar tarea
-
-#### Autenticación
-Incluir header:
-
-```bash
-X-API-Key: mi-clave-secreta
-```
 
 #### Especificación OpenAPI
 

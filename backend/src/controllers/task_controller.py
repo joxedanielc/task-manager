@@ -5,6 +5,7 @@ from src.services.db import Database
 from bson import ObjectId
 import json
 from flask_cors import CORS, cross_origin
+from src.controllers.auth import token_required
 
 api = Namespace('tasks', description='Operaciones con tareas')
 
@@ -18,7 +19,8 @@ task_model = api.model('Task', {
 
 @api.route('/', strict_slashes=False)
 class TaskList(Resource):
-    @api.doc(security='apikey')
+    @token_required
+    @api.doc(security='Bearer Auth')
     @api.marshal_list_with(task_model)
     def get(self):
         """Listar todas las tareas"""
@@ -27,7 +29,8 @@ class TaskList(Resource):
             TaskResponse.from_mongo(task).dict() for task in tasks
         ]
 
-    @api.doc(security='apikey')
+    @token_required
+    @api.doc(security='Bearer Auth')
     @api.expect(task_model)
     @api.marshal_with(task_model, code=201)
     def post(self):
@@ -44,7 +47,8 @@ class TaskList(Resource):
 
 @api.route('/<string:task_id>')
 class TaskResource(Resource):
-    @api.doc(security='apikey')
+    @token_required
+    @api.doc(security="Bearer Auth")
     @api.expect(task_model)
     @api.marshal_with(task_model)
     def put(self, task_id):
@@ -62,7 +66,8 @@ class TaskResource(Resource):
         except Exception as e:
             return {'error': str(e)}, 400
 
-    @api.doc(security='apikey')
+    @token_required
+    @api.doc(security="Bearer Auth")
     def delete(self, task_id):
         """Eliminar tarea"""
         try:

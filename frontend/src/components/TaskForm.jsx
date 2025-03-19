@@ -35,7 +35,8 @@ const TaskForm = ({ open, onClose, onSuccess, taskToEdit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+    console.log(taskToEdit)
+    console.log(formData)
     try {
       if (taskToEdit) {
         await taskService.update(taskToEdit.id, formData);
