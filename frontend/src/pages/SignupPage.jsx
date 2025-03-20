@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { authService } from "../services/api";
-import { TextField, Button, Container, Typography } from "@mui/material";
+import { TextField, Button, Container, Typography, Paper, Box } from "@mui/material";
 
 const SignupPage = () => {
   const [userData, setUserData] = useState({ username: "", password: "" });
@@ -16,21 +16,32 @@ const SignupPage = () => {
     e.preventDefault();
     try {
       await authService.signup(userData);
-      navigate("/login"); // Redirect to LoginPage after signup
+      navigate("/login");
     } catch (err) {
       setError("Signup failed. Try again.");
     }
   };
 
   return (
-    <Container maxWidth="xs">
-      <Typography variant="h4">Sign Up</Typography>
-      {error && <Typography color="error">{error}</Typography>}
-      <form onSubmit={handleSubmit}>
-        <TextField fullWidth margin="normal" label="Username" name="username" onChange={handleChange} required />
-        <TextField fullWidth margin="normal" type="password" label="Password" name="password" onChange={handleChange} required />
-        <Button type="submit" variant="contained" fullWidth>Sign Up</Button>
-      </form>
+    <Container maxWidth="xs" sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "90vh" }}>
+      <Paper elevation={5} sx={{ padding: 4, borderRadius: 3, boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", width: "50vh" }}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Sign Up
+        </Typography>
+        {error && <Typography color="error" align="center">{error}</Typography>}
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <TextField fullWidth label="Username" name="username" onChange={handleChange} required />
+          <TextField fullWidth type="password" label="Password" name="password" onChange={handleChange} required />
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Button type="submit" variant="contained">
+              Sign Up
+            </Button>
+            <Typography variant="body2">
+              <Link to="/login" style={{ textDecoration: "none" }}>Login</Link>
+            </Typography>
+          </Box>
+        </Box>
+      </Paper>
     </Container>
   );
 };

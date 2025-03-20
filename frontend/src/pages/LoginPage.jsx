@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { authService } from "../services/api";
-import { TextField, Button, Container, Typography } from "@mui/material";
+import { TextField, Button, Container, Typography, Paper, Box } from "@mui/material";
 
-const LoginPage = ({setIsAuthenticated}) => {
+const LoginPage = ({ setIsAuthenticated }) => {
   const [credentials, setCredentials] = useState({ username: "", password: "" });
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -24,14 +24,25 @@ const LoginPage = ({setIsAuthenticated}) => {
   };
 
   return (
-    <Container maxWidth="xs">
-      <Typography variant="h4">Login</Typography>
-      {error && <Typography color="error">{error}</Typography>}
-      <form onSubmit={handleSubmit}>
-        <TextField fullWidth margin="normal" label="Username" name="username" onChange={handleChange} required />
-        <TextField fullWidth margin="normal" type="password" label="Password" name="password" onChange={handleChange} required />
-        <Button type="submit" variant="contained" fullWidth>Login</Button>
-      </form>
+    <Container sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "90vh" }}>
+      <Paper elevation={5} sx={{ padding: 4, borderRadius: 3, boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", width: "50vh"}}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Login
+        </Typography>
+        {error && <Typography color="error" align="center">{error}</Typography>}
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <TextField fullWidth label="Username" name="username" onChange={handleChange} required />
+          <TextField fullWidth type="password" label="Password" name="password" onChange={handleChange} required />
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Button type="submit" variant="contained">
+              Login
+            </Button>
+            <Typography variant="body2">
+              <Link to="/signup" style={{ textDecoration: "none" }}>Sign up</Link>
+            </Typography>
+          </Box>
+        </Box>
+      </Paper>
     </Container>
   );
 };
